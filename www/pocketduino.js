@@ -125,6 +125,12 @@ PocketDuino.prototype.loadHexFile = function(fileName, successCallback, errorCal
 };
 
 /**
+ * PocketDuino シリアル書き込み
+ */
+PocketDuino.prototype.write = function( command, successCallback, errorCallback ){
+  cordova.exec( successCallback, errorCallback, "PocketDuino", "write", [command]);
+
+/**
 * PocketDuino デバイスオープンから受信までのラッパー
 */
 PocketDuino.prototype.run = function(fileName, successCallback, errorCallback) {

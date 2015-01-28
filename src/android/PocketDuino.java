@@ -114,6 +114,9 @@ public class PocketDuino extends CordovaPlugin {
         } else if (action.equals("closeDevice")) {
             closeDevice(callbackContext);
             return true;    // exec()はtrueを返さないと successCallbackの後にerrorCallbackが走ってしまう
+        } else if( action.equals("write")) {
+            writeSerial(callbackContext, args);
+            return true;    // exec()はtrueを返さないと successCallbackの後にerrorCallbackが走ってしまう
         } else {
             PluginResult dataResult = new PluginResult(PluginResult.Status.INVALID_ACTION, "Invalid Action");
             callbackContext.sendPluginResult(dataResult);
@@ -223,6 +226,32 @@ public class PocketDuino extends CordovaPlugin {
             dataResult.setKeepCallback(true);
             callbackContext.sendPluginResult(dataResult);
         }
+    }
+
+    /**
+     *
+     */
+    private void writeSerial(CallbackContext callbackContext, JSONArray args ){
+      try{
+        String command = args.getString(0);
+        byte[] buf = command.getBytes();
+        Log.d(POCKETDUINO, command);
+        this.mPhysicaloid.write( buf , buf.length );
+        PluginResult dataResult = new PluginResult(PluginResult.Status.OK);
+        dataResult.setKeepCallback(true);
+        callbackContext.sendPluginResult(dataResult);
+      }catch( Exception e ){
+        try{
+          String json = "{\"message\":" + e.toString() + " }";
+          JSONObject parameter = new JSONObject(json);
+          PluginResult dataResult = new PluginResult(PluginResult.Status.ERROR, parameter);
+          dataResult.setKeepCallback(true);
+          callbackContext.sendPluginResult(dataResult);
+          String hoge;
+        }catch(Exception ex){
+          Log.e(POCKETDUINO, ex.toString());
+        }
+      }
     }
 
     /**
